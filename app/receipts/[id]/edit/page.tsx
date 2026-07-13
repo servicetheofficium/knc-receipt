@@ -101,21 +101,21 @@ export default function EditReceiptPage() {
   const inputClass = "w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400";
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-700 text-sm">
             ← Back
           </button>
-          <h1 className="text-2xl font-bold text-gray-800">Edit Receipt</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Edit Receipt</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded shadow p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded shadow p-4 sm:p-6 space-y-6">
 
           {/* Receipt Info */}
           <section>
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Receipt Info</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
                 <input type="datetime-local" value={form.date} onChange={(e) => updateField("date", e.target.value)} required className={inputClass} />
@@ -130,7 +130,7 @@ export default function EditReceiptPage() {
           {/* Student Info */}
           <section>
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Student Information</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                 <input type="text" value={form.student_name} onChange={(e) => updateField("student_name", e.target.value)} required className={inputClass} />
@@ -149,7 +149,7 @@ export default function EditReceiptPage() {
           {/* Parent Info */}
           <section>
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Parent Information</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Parent Name</label>
                 <input type="text" value={form.parent_name} onChange={(e) => updateField("parent_name", e.target.value)} className={inputClass} />
@@ -170,9 +170,9 @@ export default function EditReceiptPage() {
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Items</h2>
             <div className="space-y-2">
               {items.map((item, i) => (
-                <div key={i} className="flex gap-2 items-center">
-                  <input type="text" placeholder="Item name" value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} required className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400" />
-                  <input type="number" placeholder="Amount" value={item.amount || ""} onChange={(e) => updateItem(i, "amount", e.target.value)} min="0" step="0.01" required className="w-32 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                <div key={i} className="flex gap-2 items-center flex-wrap sm:flex-nowrap">
+                  <input type="text" placeholder="Item name" value={item.name} onChange={(e) => updateItem(i, "name", e.target.value)} required className="flex-1 min-w-[140px] border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                  <input type="number" placeholder="Amount" value={item.amount || ""} onChange={(e) => updateItem(i, "amount", e.target.value)} min="0" step="0.01" required className="w-24 sm:w-32 border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400" />
                   {items.length > 1 && (
                     <button type="button" onClick={() => removeItem(i)} className="text-red-400 hover:text-red-600 text-lg leading-none">×</button>
                   )}
@@ -188,7 +188,7 @@ export default function EditReceiptPage() {
           {/* Payment */}
           <section>
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Payment</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Method</label>
                 <select value={form.payment_method} onChange={(e) => updateField("payment_method", e.target.value)} className={inputClass}>
