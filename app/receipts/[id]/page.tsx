@@ -63,6 +63,7 @@ export default function ReceiptDetailPage() {
 
         <h3>Student Information</h3>
         <div className="info-row"><span>Name</span><span>{receipt.student_name}</span></div>
+        {receipt.age && <div className="info-row"><span>Age</span><span>{receipt.age}</span></div>}
         <div className="info-row"><span>Course</span><span>{receipt.course}</span></div>
 
         <div className="line" />

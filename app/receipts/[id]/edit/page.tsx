@@ -14,6 +14,7 @@ export default function EditReceiptPage() {
     date: "",
     staff: "",
     student_name: "",
+    age: 0,
     course: "",
     parent_name: "",
     parent_phone: "",
@@ -32,6 +33,7 @@ export default function EditReceiptPage() {
           date: new Date(r.date).toISOString().slice(0, 16),
           staff: r.staff,
           student_name: r.student_name,
+          age: r.age ?? 0,
           course: r.course,
           parent_name: r.parent_name ?? "",
           parent_phone: r.parent_phone ?? "",
@@ -78,6 +80,7 @@ export default function EditReceiptPage() {
       .update({
         ...form,
         date: new Date(form.date).toISOString(),
+        age: form.age ? Number(form.age) : null,
         items,
         total,
         paid_amount: Number(form.paid_amount),
@@ -131,6 +134,10 @@ export default function EditReceiptPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                 <input type="text" value={form.student_name} onChange={(e) => updateField("student_name", e.target.value)} required className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                <input type="number" value={form.age || ""} onChange={(e) => updateField("age", e.target.value)} min="1" max="100" className={inputClass} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Course *</label>

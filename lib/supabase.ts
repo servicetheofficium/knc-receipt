@@ -11,6 +11,7 @@ export type Receipt = {
   date: string;
   staff: string;
   student_name: string;
+  age: number | null;
   course: string;
   parent_name: string;
   parent_phone: string;

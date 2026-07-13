@@ -14,6 +14,7 @@ export default function NewReceiptPage() {
     date: new Date().toISOString().slice(0, 16),
     staff: "Admin",
     student_name: "",
+    age: "",
     course: "",
     parent_name: "",
     parent_phone: "",
@@ -54,6 +55,7 @@ export default function NewReceiptPage() {
     const { error } = await supabase.from("receipts").insert({
       ...form,
       date: new Date(form.date).toISOString(),
+      age: form.age ? Number(form.age) : null,
       items,
       total,
       paid_amount: Number(form.paid_amount),
@@ -104,6 +106,10 @@ export default function NewReceiptPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
                 <input type="text" value={form.student_name} onChange={(e) => updateField("student_name", e.target.value)} required className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                <input type="number" value={form.age} onChange={(e) => updateField("age", e.target.value)} min="1" max="100" className={inputClass} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Course *</label>

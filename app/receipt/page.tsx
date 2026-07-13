@@ -23,6 +23,7 @@ export default function ReceiptPage() {
 
         <h3>Student Information</h3>
         <div className="info-row"><span>Name</span><span>Mg Mg</span></div>
+        <div className="info-row"><span>Age</span><span>25</span></div>
         <div className="info-row"><span>Phone</span><span>09X-XXX-XXXX</span></div>
         <div className="info-row"><span>Passport No</span><span>MA123456</span></div>
         <div className="info-row"><span>Course</span><span>Thai Course 6 Months</span></div>
