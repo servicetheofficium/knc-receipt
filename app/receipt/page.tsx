@@ -10,7 +10,7 @@ export default function ReceiptPage() {
           <h1>KNC School</h1>
           <p>Language & Education Center</p>
           <p>Bangkok, Thailand</p>
-          <p>Tel: 09X-XXX-XXXX</p>
+          <p>Tel: 020339299</p>
         </div>
 
         <div className="line" />
