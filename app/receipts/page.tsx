@@ -37,10 +37,10 @@ export default function ReceiptsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-5xl mx-auto text-gray-900">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">KNC School — Receipts</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">KNC School — Receipts</h1>
           <Link
             href="/receipts/new"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-medium"
@@ -62,8 +62,8 @@ export default function ReceiptsPage() {
         ) : filtered.length === 0 ? (
           <p className="text-gray-500 text-sm">No receipts found.</p>
         ) : (
-          <div className="bg-white rounded shadow overflow-hidden">
-            <table className="w-full text-sm text-gray-900">
+          <div className="bg-white rounded shadow overflow-x-auto">
+            <table className="w-full text-sm text-gray-900 min-w-[640px]">
               <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
                 <tr>
                   <th className="px-4 py-3 text-left">Receipt No</th>

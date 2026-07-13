@@ -1,5 +1,6 @@
 .receipt-page {
   width: 80mm;
+  max-width: 100%;
   margin: 0 auto;
   background: white;
   color: black;
@@ -8,6 +9,7 @@
 
 .receipt {
   width: 80mm;
+  max-width: 100%;
   padding: 6mm 4mm;
   box-sizing: border-box;
   font-size: 12px;
