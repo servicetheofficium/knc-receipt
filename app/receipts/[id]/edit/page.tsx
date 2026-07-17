@@ -4,14 +4,23 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { supabase, Receipt, ReceiptItem } from "@/lib/supabase";
 
+function toDateInputValue(d: Date) {
+  const yr = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, "0");
+  const da = String(d.getDate()).padStart(2, "0");
+  return `${yr}-${mo}-${da}`;
+}
+
 export default function EditReceiptPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [originalTime, setOriginalTime] = useState({ h: 0, m: 0, s: 0 });
 
   const [form, setForm] = useState({
     date: "",
+    receipt_no: "",
     staff: "",
     student_name: "",
     age: 0,
@@ -19,6 +28,7 @@ export default function EditReceiptPage() {
     parent_name: "",
     parent_phone: "",
     parent_address: "",
+    note: "",
     payment_method: "Cash",
     paid_amount: 0,
   });
@@ -29,8 +39,11 @@ export default function EditReceiptPage() {
       const { data } = await supabase.from("receipts").select("*").eq("id", id).single();
       if (data) {
         const r = data as Receipt;
+        const d = new Date(r.date);
+        setOriginalTime({ h: d.getHours(), m: d.getMinutes(), s: d.getSeconds() });
         setForm({
-          date: new Date(r.date).toISOString().slice(0, 16),
+          date: toDateInputValue(d),
+          receipt_no: r.receipt_no,
           staff: r.staff,
           student_name: r.student_name,
           age: r.age ?? 0,
@@ -38,6 +51,7 @@ export default function EditReceiptPage() {
           parent_name: r.parent_name ?? "",
           parent_phone: r.parent_phone ?? "",
           parent_address: r.parent_address ?? "",
+          note: r.note ?? "",
           payment_method: r.payment_method,
           paid_amount: r.paid_amount,
         });
@@ -75,12 +89,17 @@ export default function EditReceiptPage() {
     e.preventDefault();
     setSaving(true);
 
+    const [y, m, d] = form.date.split("-").map(Number);
+    const combinedDate = new Date(y, m - 1, d, originalTime.h, originalTime.m, originalTime.s);
+
     const { error } = await supabase
       .from("receipts")
       .update({
         ...form,
-        date: new Date(form.date).toISOString(),
+        receipt_no: form.receipt_no.trim(),
+        date: combinedDate.toISOString(),
         age: form.age ? Number(form.age) : null,
+        note: form.note || null,
         items,
         total,
         paid_amount: Number(form.paid_amount),
@@ -117,12 +136,19 @@ export default function EditReceiptPage() {
             <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Receipt Info</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
-                <input type="datetime-local" value={form.date} onChange={(e) => updateField("date", e.target.value)} required className={inputClass} />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                <input type="date" value={form.date} onChange={(e) => updateField("date", e.target.value)} required className={inputClass} />
+                <p className="mt-1 text-xs text-gray-400">
+                  Time: {String(originalTime.h).padStart(2, "0")}:{String(originalTime.m).padStart(2, "0")} (unchanged)
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Staff</label>
                 <input type="text" value={form.staff} onChange={(e) => updateField("staff", e.target.value)} required className={inputClass} />
+              </div>
+              <div className="col-span-1 sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Receipt No</label>
+                <input type="text" value={form.receipt_no} onChange={(e) => updateField("receipt_no", e.target.value)} required className={inputClass} />
               </div>
             </div>
           </section>
@@ -162,6 +188,15 @@ export default function EditReceiptPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                 <textarea value={form.parent_address} onChange={(e) => updateField("parent_address", e.target.value)} rows={2} className={inputClass} />
               </div>
+            </div>
+          </section>
+
+          {/* Internal Note */}
+          <section>
+            <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Internal Note</h2>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Note (staff only — not printed on receipt)</label>
+              <textarea value={form.note} onChange={(e) => updateField("note", e.target.value)} rows={2} placeholder="e.g. Received by Admin John" className={inputClass} />
             </div>
           </section>
 

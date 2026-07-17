@@ -16,6 +16,7 @@ export type Receipt = {
   parent_name: string;
   parent_phone: string;
   parent_address: string;
+  note: string | null;
   items: ReceiptItem[];
   total: number;
   payment_method: string;
