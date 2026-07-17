@@ -36,17 +36,66 @@ export default function ReceiptsPage() {
       r.course.toLowerCase().includes(search.toLowerCase())
   );
 
+  function exportCSV() {
+    const headers = [
+      "Receipt No", "Date", "Staff", "Student", "Age", "Course",
+      "Parent Name", "Parent Phone", "Parent Address", "Payment Method",
+      "Paid Amount", "Total", "Change", "Note",
+    ];
+    const escape = (v: string | number | null | undefined) => {
+      if (v == null) return "";
+      const s = String(v);
+      return s.includes(",") || s.includes('"') || s.includes("\n")
+        ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const rows = [
+      headers.join(","),
+      ...filtered.map((r) => [
+        escape(r.receipt_no),
+        escape(new Date(r.date).toLocaleString("en-GB")),
+        escape(r.staff),
+        escape(r.student_name),
+        escape(r.age),
+        escape(r.course),
+        escape(r.parent_name),
+        escape(r.parent_phone),
+        escape(r.parent_address),
+        escape(r.payment_method),
+        escape(r.paid_amount),
+        escape(r.total),
+        escape(r.change_amount),
+        escape(r.note),
+      ].join(",")),
+    ];
+    const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `receipts_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       <div className="max-w-5xl mx-auto text-gray-900">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-800">KNC School — Receipts</h1>
-          <Link
-            href="/receipts/new"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-medium"
-          >
-            + New Receipt
-          </Link>
+          <div className="flex gap-2">
+            <button
+              onClick={exportCSV}
+              disabled={filtered.length === 0}
+              className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 text-sm font-medium disabled:opacity-50"
+            >
+              Export CSV
+            </button>
+            <Link
+              href="/receipts/new"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-medium"
+            >
+              + New Receipt
+            </Link>
+          </div>
         </div>
 
         <input
@@ -70,6 +119,7 @@ export default function ReceiptsPage() {
                   <th className="px-4 py-3 text-left">Date</th>
                   <th className="px-4 py-3 text-left">Student</th>
                   <th className="px-4 py-3 text-left">Course</th>
+                  <th className="px-4 py-3 text-left">Note</th>
                   <th className="px-4 py-3 text-right">Total</th>
                   <th className="px-4 py-3 text-center">Actions</th>
                 </tr>
@@ -83,6 +133,7 @@ export default function ReceiptsPage() {
                     </td>
                     <td className="px-4 py-3 text-gray-900">{r.student_name}</td>
                     <td className="px-4 py-3 text-gray-700">{r.course}</td>
+                    <td className="px-4 py-3 text-gray-500 max-w-[160px] truncate" title={r.note ?? ""}>{r.note || "-"}</td>
                     <td className="px-4 py-3 text-right font-medium text-gray-900">
                       {r.total.toLocaleString("en-US", { minimumFractionDigits: 2 })} THB
                     </td>
