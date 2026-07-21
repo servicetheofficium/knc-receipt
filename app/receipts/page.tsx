@@ -3,20 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase, Receipt } from "@/lib/supabase";
+import { logout } from "@/lib/auth";
 
 export default function ReceiptsPage() {
   const [receipts, setReceipts] = useState<Receipt[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  async function fetchReceipts() {
-    setLoading(true);
+  async function fetchReceipts(showLoading = true) {
+    if (showLoading) setLoading(true);
     const { data } = await supabase
       .from("receipts")
       .select("*")
       .order("created_at", { ascending: false });
     setReceipts(data ?? []);
-    setLoading(false);
+    if (showLoading) setLoading(false);
   }
 
   async function handleDelete(id: string) {
@@ -27,6 +28,19 @@ export default function ReceiptsPage() {
 
   useEffect(() => {
     fetchReceipts();
+
+    const channel = supabase
+      .channel("receipts-changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "receipts" },
+        () => fetchReceipts(false)
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const filtered = receipts.filter(
@@ -95,6 +109,14 @@ export default function ReceiptsPage() {
             >
               + New Receipt
             </Link>
+            <form action={logout}>
+              <button
+                type="submit"
+                className="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded hover:bg-gray-50 text-sm font-medium"
+              >
+                Logout
+              </button>
+            </form>
           </div>
         </div>
 
